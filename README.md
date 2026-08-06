@@ -1,37 +1,31 @@
-# Python Basic Projects
+# Python Basic Projects (Python 基础小项目合集)
 
-这是我的 Python 基础阶段项目合集，用来记录从语法、函数、循环、异常处理，到文件读取、API 请求、数据分析和文本处理的练习过程。
+这是我的 Python 基础阶段项目合集，用来记录从语法、函数、循环、异常处理，到文件读取、API 请求、数据分析和文本处理的练习过程。重点在于把每一个阶段学到的基础能力沉淀成可运行、可复习、可继续迭代的小项目。
 
-这个仓库的重点不是做大型应用，而是把每一个阶段学到的基础能力沉淀成可运行、可复习、可继续迭代的小项目。
+## 🌟 项目亮点
 
-## 项目列表
+- **循序渐进**：项目涵盖了从最基础的语法逻辑，到处理外部 API 及本地数据的进阶练习。
+- **独立可运行**：每个小项目都经过完整封装，拥有独立的运行入口和配套文档。
+- **规范管理**：每个项目均有其核心学习目的，避免冗余和无目的的代码堆砌。
 
-| 项目 | 学习重点 |
-| --- | --- |
-| `number-analyzer` | 数字统计、循环、异常处理、函数拆分 |
-| `student-score-analyzer` | 成绩统计、条件判断、字典返回结果 |
-| `data-analyzer` | pandas、CSV 读取、基础统计、matplotlib 可视化 |
-| `text-analyzer` | jieba 分词、词频统计、文本可视化 |
-| `exchange-rate-checker` | requests、真实 API、JSON 解析、汇率换算 |
+## 📁 目录结构与学习脉络
 
-## 学习脉络
+| 项目目录 | 核心学习重点 | 所属分类 |
+| --- | --- | --- |
+| `number-analyzer` | 数字统计、循环、异常处理、函数拆分 | 基础语法和输入处理 |
+| `student-score-analyzer` | 成绩统计、条件判断、字典返回结果 | 基础语法和输入处理 |
+| `data-analyzer` | pandas、CSV 读取、基础统计、matplotlib 可视化 | 数据和文本处理 |
+| `text-analyzer` | jieba 分词、词频统计、文本可视化 | 数据和文本处理 |
+| `exchange-rate-checker` | requests、真实 API、JSON 解析、汇率换算 | 外部数据接口 |
 
-这些项目大致按学习过程分成三类：
+## 🚀 如何运行
 
-- 基础语法和输入处理：`number-analyzer`、`student-score-analyzer`
-- 数据和文本处理：`data-analyzer`、`text-analyzer`
-- 外部数据接口：`exchange-rate-checker`
+本项目使用 `uv` 进行依赖管理。每个子项目都有独立的运行环境配置。
 
-## 运行方式
-
-每个子项目都有自己的 `README.md` 和 `pyproject.toml`。进入对应项目目录后运行：
+进入对应的项目目录后，直接运行以下命令即可：
 
 ```bash
+# 例如进入并运行汇率转换项目
+cd exchange-rate-checker
 uv run main.py
 ```
-
-## GitHub 维护方式
-
-这个目录对应 GitHub 仓库：`python-basic-projects`。
-
-历史上这些小项目曾经是独立仓库；之后统一收进这个领域仓库，方便按学习阶段维护。每个子项目的具体说明会保留在项目自己的 `README.md` 中。
