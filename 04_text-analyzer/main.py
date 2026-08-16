@@ -1,9 +1,10 @@
 """
-【知识点】中文文本分词与高频词可视化 (jieba + matplotlib)
+💡【知识点】中文文本分词与高频词可视化 (jieba + matplotlib)
 --------------------------------------------------------------------------------
-1. jieba 分词：使用精准模式 cut 提取中文词汇。
-2. 词频统计：使用 collections.Counter 统计 Top 10 高频词。
-3. 可视化：生成中文柱状图展示词频分布。
+📌【核心思想与本质】
+  1. 中文分词机制：jieba.cut 利用前缀词典与 HMM 隐马尔可夫模型精准切分中文词语。
+  2. 词频统计：使用 collections.Counter 快速汇总词频并提取 Top 10。
+  3. 中文字体配置：设置 Arial Unicode MS 解决图表中文方块乱码。
 --------------------------------------------------------------------------------
 """
 
@@ -19,26 +20,29 @@ def main():
 
     text = sample_file.read_text(encoding="utf-8")
 
-    # 1. 中文分词与停用词过滤 (过滤单字与标点)
+    # ==================== 1. 中文分词与停用词过滤 ====================
+    # 过滤掉单字和空白标点
     words = [w for w in jieba.cut(text) if len(w.strip()) > 1]
     counter = Counter(words)
     top10 = counter.most_common(10)
 
-    print("=== 词频 Top 10 ===")
+    print("=== 词频 Top 10 榜单 ===")
     for word, count in top10:
-        print(f"  {word}: {count} 次")
+        print(f"  {word:10}: {count} 次")
 
-    # 2. 绘制词频柱状图
+    # ==================== 2. Matplotlib 图表绘制 ====================
     if top10:
         words, counts = zip(*top10)
+        
+        # 解决 macOS 中文字体显示问题
         plt.rcParams["font.family"] = ["Arial Unicode MS", "SimHei", "sans-serif"]
         plt.rcParams["axes.unicode_minus"] = False
 
         plt.figure(figsize=(8, 4.5))
-        plt.bar(words, counts, color="teal", edgecolor="black")
-        plt.title("高频词分布柱状图")
-        plt.xlabel("词汇")
-        plt.ylabel("频次")
+        plt.bar(words, counts, color="#008080", edgecolor="black", alpha=0.85)
+        plt.title("中文高频词分布柱状图", fontsize=14)
+        plt.xlabel("词汇", fontsize=12)
+        plt.ylabel("出现频次", fontsize=12)
         plt.tight_layout()
         plt.show()
 
