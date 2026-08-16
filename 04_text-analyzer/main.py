@@ -1,61 +1,46 @@
 """
-💡【知识点】Jieba 中文分词、词频统计 (Counter) 与 Matplotlib 可视化
+【知识点】中文文本分词与高频词可视化 (jieba + matplotlib)
 --------------------------------------------------------------------------------
-📌【概念与本质】
-  1. Jieba 分词：基于前缀词典实现高效的词图扫描，结合 Viterbi 算法切分中文语句。
-  2. 停用与单字过滤：列表推导式 `[w for w in words if len(w) > 1]` 过滤语气词与标点单字。
-  3. Counter 聚合：标准库 collections.Counter 高效统计词频，most_common(N) 提取 Top-N 热词。
-
-📌【架构与模块分工】
-  1. 文本读取与中文分词：utf-8 编码安全读取文本并调用 jieba.cut。
-  2. 词频统计与 Top-N 提取：Counter.most_common(5) 提取高频词。
-  3. 柱状图呈现：Matplotlib 绘制词频条形图并配置中文字体。
+1. jieba 分词：使用精准模式 cut 提取中文词汇。
+2. 词频统计：使用 collections.Counter 统计 Top 10 高频词。
+3. 可视化：生成中文柱状图展示词频分布。
 --------------------------------------------------------------------------------
 """
 
 from collections import Counter
+from pathlib import Path
 import jieba
 import matplotlib.pyplot as plt
 
-# ==================== 1. 文本读取与 Jieba 中文分词 ====================
+def main():
+    sample_file = Path(__file__).resolve().parent / "sample.txt"
+    if not sample_file.exists():
+        sample_file.write_text("Python 是一门优秀的编程语言。Python 简单易学，在数据分析与人工智能领域应用广泛。学习 Python 非常有趣！", encoding="utf-8")
 
-with open("sample.txt", "r", encoding="utf-8") as f:
-    text = f.read()
+    text = sample_file.read_text(encoding="utf-8")
 
-# 中文精准切词
-raw_words = list(jieba.cut(text))
+    # 1. 中文分词与停用词过滤 (过滤单字与标点)
+    words = [w for w in jieba.cut(text) if len(w.strip()) > 1]
+    counter = Counter(words)
+    top10 = counter.most_common(10)
 
-# 过滤长度 <= 1 的单字与标点符号，保留实际词汇
-filtered_words = [word for word in raw_words if len(word) > 1]
+    print("=== 词频 Top 10 ===")
+    for word, count in top10:
+        print(f"  {word}: {count} 次")
 
-# ==================== 2. 词频聚合与 Top-5 提取 ====================
+    # 2. 绘制词频柱状图
+    if top10:
+        words, counts = zip(*top10)
+        plt.rcParams["font.family"] = ["Arial Unicode MS", "SimHei", "sans-serif"]
+        plt.rcParams["axes.unicode_minus"] = False
 
-word_counts = Counter(filtered_words)
-top5 = word_counts.most_common(5)
+        plt.figure(figsize=(8, 4.5))
+        plt.bar(words, counts, color="teal", edgecolor="black")
+        plt.title("高频词分布柱状图")
+        plt.xlabel("词汇")
+        plt.ylabel("频次")
+        plt.tight_layout()
+        plt.show()
 
-print("=== 出现频次最高的 Top-5 词汇 ===")
-for rank, (word, count) in enumerate(top5, 1):
-    print(f"{rank}. 【{word}】: {count} 次")
-
-# 拆分键与值供图表渲染
-words_list = [item[0] for item in top5]
-counts_list = [item[1] for item in top5]
-
-# ==================== 3. 词频柱状图可视化 ====================
-
-plt.rcParams["font.family"] = ["Arial Unicode MS"]
-plt.rcParams["axes.unicode_minus"] = False
-
-plt.figure(figsize=(8, 5))
-bars = plt.bar(words_list, counts_list, color="#4C72B0", edgecolor="black", alpha=0.85)
-
-# 在柱子上方标注具体频次数值
-for bar in bars:
-    height = bar.get_height()
-    plt.text(bar.get_x() + bar.get_width() / 2.0, height + 0.1, f"{int(height)}", ha="center", va="bottom")
-
-plt.title("文本高频词汇 Top-5 统计图", fontsize=14)
-plt.xlabel("高频词语", fontsize=12)
-plt.ylabel("出现次数", fontsize=12)
-plt.tight_layout()
-plt.show()
+if __name__ == "__main__":
+    main()

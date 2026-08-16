@@ -1,108 +1,45 @@
 """
-💡【知识点】学生成绩统计分段模型与控制台 CLI 架构
+【知识点】学生成绩统计器 (聚合统计与等级评定)
 --------------------------------------------------------------------------------
-📌【概念与本质】
-  1. 成绩区间分段统计：
-     - 不及格 (Fail): < 60 分
-     - 及格 (Pass): 60 ~ 79 分
-     - 良好 (Good): 80 ~ 89 分
-     - 优秀 (Excellent): >= 90 分
-  2. 健壮的输入校验：基于 split() 与 list comprehension 处理空格分隔数据。
-
-📌【架构与模块分工】
-  1. parse_scores()   : 交互式获取并解析成绩列表，支持 q 退出。
-  2. analyze_scores() : 综合计算总分、极值、均值与四大等级段人数分布。
-  3. print_result()   : 格式化打印成绩分析报表。
-  4. main()           : 循环驱动入口。
+1. 容器操作：使用字典存储学生与成绩映射。
+2. 聚合统计：计算平均分、及格率、最高/最低分。
+3. 等级评定：根据分数区间 (90/80/70/60) 输出对应等级。
 --------------------------------------------------------------------------------
 """
 
-# ==================== 1. 成绩输入与解析 ====================
-
-def parse_scores():
-    """解析控制台输入的空格分隔分数串，支持 q 退出"""
-    raw_text = input("请输入一组学生成绩（空格隔开，输入 q 退出）: ").strip()
-
-    if raw_text.lower() == "q":
-        return "q"
-    if not raw_text:
-        print("【提示】输入不能为空，请至少输入一个有效成绩。\n")
-        return None
-
-    try:
-        scores = [int(n) for n in raw_text.split()]
-        # 成绩合理性校验 (0 ~ 100)
-        for s in scores:
-            if s < 0 or s > 100:
-                print(f"【警告】存在超出 [0, 100] 范围的异常分数: {s}")
-        return scores
-    except ValueError:
-        print("【错误】请输入有效的纯数字成绩！\n")
-        return None
-
-# ==================== 2. 成绩分段与指标聚合 ====================
-
-def analyze_scores(scores):
-    """统计总分、最高分、最低分、平均分以及各成绩段人数"""
-    total_score = sum(scores)
-    max_score = max(scores)
-    min_score = min(scores)
-    average_score = total_score / len(scores) if scores else 0.0
-
-    fail_count = 0      # < 60
-    pass_count = 0      # 60 ~ 79
-    good_count = 0      # 80 ~ 89
-    excellent_count = 0 # >= 90
-
-    for score in scores:
-        if score < 60:
-            fail_count += 1
-        elif score < 80:
-            pass_count += 1
-        elif score < 90:
-            good_count += 1
-        else:
-            excellent_count += 1
-    
-    return {
-        "total_score": total_score,
-        "max_score": max_score,
-        "min_score": min_score,
-        "average_score": average_score,
-        "pass_count": pass_count,
-        "fail_count": fail_count,
-        "good_count": good_count,
-        "excellent_count": excellent_count,
-        "total_students": len(scores)
-    }
-
-# ==================== 3. 报表输出与驱动入口 ====================
-
-def print_result(result):
-    """格式化打印成绩分析汇总"""
-    print("\n========== 学生成绩统计报表 ==========")
-    print(f"参考总人数:       {result['total_students']} 人")
-    print(f"全班总分:         {result['total_score']} 分")
-    print(f"最高分:           {result['max_score']} 分")
-    print(f"最低分:           {result['min_score']} 分")
-    print(f"平均分:           {result['average_score']:.2f} 分")
-    print("-" * 38)
-    print(f"优秀 (90~100分):  {result['excellent_count']} 人")
-    print(f"良好 (80~89分):   {result['good_count']} 人")
-    print(f"及格 (60~79分):   {result['pass_count']} 人")
-    print(f"不及格 (<60分):   {result['fail_count']} 人")
-    print("======================================\n")
+def evaluate_grade(score: float) -> str:
+    if score >= 90: return "优秀 (A)"
+    if score >= 80: return "良好 (B)"
+    if score >= 70: return "中等 (C)"
+    if score >= 60: return "及格 (D)"
+    return "不及格 (F)"
 
 def main():
-    while True:
-        scores = parse_scores()
-        if scores == "q":
-            print("程序已退出。")
-            break
-        
-        if scores is not None:
-            result = analyze_scores(scores)
-            print_result(result)
+    scores = {
+        "Alice": 92.5,
+        "Bob": 58.0,
+        "Charlie": 84.0,
+        "David": 76.5,
+        "Eva": 45.0,
+        "Frank": 88.0
+    }
+
+    score_list = list(scores.values())
+    total_students = len(score_list)
+    avg_score = sum(score_list) / total_students
+    passed_count = sum(1 for s in score_list if s >= 60.0)
+    pass_rate = (passed_count / total_students) * 100
+
+    print("=== 全班成绩总览 ===")
+    for name, score in scores.items():
+        print(f"  {name:10}: {score:5.1f} 分 | 等级: {evaluate_grade(score)}")
+
+    print("\n=== 统计指标 ===")
+    print(f"学生总数: {total_students} 人")
+    print(f"平均成绩: {avg_score:.2f} 分")
+    print(f"最高分数: {max(score_list):.1f} 分")
+    print(f"最低分数: {min(score_list):.1f} 分")
+    print(f"及格率:   {pass_rate:.1f}% ({passed_count}/{total_students})")
 
 if __name__ == "__main__":
     main()
