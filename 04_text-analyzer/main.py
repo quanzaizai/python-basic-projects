@@ -14,10 +14,11 @@
 =============================================================================
 """
 
-from collections import Counter
-from pathlib import Path
-import jieba
-import matplotlib.pyplot as plt
+# ==================== 0. 文本处理、分词与可视化库引入 ====================
+from collections import Counter   # 高性能容器库：提供 Counter 快速统计高频词频并提取 Top K
+from pathlib import Path          # 面向对象路径管理库：提供跨平台安全文件读写与路径解析
+import jieba                      # 结巴分词库：基于前缀词典与 HMM 模型实现中文精准分词
+import matplotlib.pyplot as plt   # 数据可视化库：提供柱状图绘制、文本标注与中文字体渲染支持
 
 
 def main() -> None:

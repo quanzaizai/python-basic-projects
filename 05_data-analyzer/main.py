@@ -15,9 +15,10 @@
 =============================================================================
 """
 
-from pathlib import Path
-import matplotlib.pyplot as plt
-import pandas as pd
+# ==================== 0. 数据科学与可视化库引入 ====================
+from pathlib import Path          # 面向对象文件路径库：管理 CSV 样本文件定位与自动生成
+import matplotlib.pyplot as plt   # 数据可视化库：提供动态条件配色直方图与全局参考基准线绘制
+import pandas as pd               # 工业级数据分析库：提供 DataFrame 表格操作、统计聚合与布尔索引筛选
 
 
 def main() -> None:

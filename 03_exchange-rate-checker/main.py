@@ -20,8 +20,9 @@
 =============================================================================
 """
 
-import requests
-from typing import Optional, Dict
+# ==================== 0. 网络请求与类型注解模块引入 ====================
+from typing import Dict, Optional  # 类型注解库：提供 Dict, Optional 用于返回值与结构声明
+import requests                    # 工业级 HTTP 请求库：提供 get(), raise_for_status() 访问远程 REST API
 
 # 免费公开的实时外汇汇率 REST API 端点 (以美元 USD 为基础货币)
 API_URL = "https://open.er-api.com/v6/latest/USD"
