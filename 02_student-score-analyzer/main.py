@@ -1,28 +1,56 @@
 """
-💡【知识点】学生成绩统计分析器 (字典容器操作、聚合计算与等级判定)
---------------------------------------------------------------------------------
-📌【核心思想与本质】
-  1. 容器映射：使用字典 (dict) 存储键值对 {"姓名": 分数}。
-  2. 聚合统计：利用 sum()、len()、max()、min() 高效计算均值、及格率与极值。
-  3. 分支映射：根据分数区间 (90/80/70/60) 实现多级评定。
---------------------------------------------------------------------------------
+=============================================================================
+💡【知识点】Python 基础实战 —— 学生成绩统计分析器 (Score Analyzer)
+=============================================================================
+
+📌【1. 核心功能与 Python 基础概念】
+  - 字典数据结构 (dict) : 键值对映射 `{"姓名": 分数}`，支持 $O(1)$ 快速检索。
+  - 内置聚合函数 (Built-in Aggregations) : 
+    - `sum()` : 累加求和
+    - `len()` : 获取样本总人数
+    - `max()` / `min()` : 快速获取全班最高/最低分数
+  - 列表推导式与生成器表达式 : `sum(1 for s in score_list if s >= 60.0)` 高效统计达标人数。
+  - 格式化字符串 (f-string) : 精确控制浮点数保留小数位数 (如 `{avg_score:.2f}`)。
+
+📌【2. 等级评定标准模型】
+  - $[90, 100]$ : 优秀 (A)
+  - $[80, 90)$  : 良好 (B)
+  - $[70, 80)$  : 中等 (C)
+  - $[60, 70)$  : 及格 (D)
+  - $[0, 60)$   : 不及格 (F)
+=============================================================================
 """
 
-# ==================== 1. 等级评定函数 ====================
+from typing import Dict
+
+
+# ==================== 1. 业务逻辑函数 ====================
 
 def evaluate_grade(score: float) -> str:
-    """根据分数返回对应的成绩等级"""
-    if score >= 90: return "优秀 (A)"
-    if score >= 80: return "良好 (B)"
-    if score >= 70: return "中等 (C)"
-    if score >= 60: return "及格 (D)"
-    return "不及格 (F)"
+    """
+    根据给定的百分制考试分数返回对应的等级描述
+
+    :param score: 浮点型考试成绩 (0 ~ 100)
+    :return: 对应的成绩评定等级字符串
+    """
+    if score >= 90.0:
+        return "优秀 (A)"
+    elif score >= 80.0:
+        return "良好 (B)"
+    elif score >= 70.0:
+        return "中等 (C)"
+    elif score >= 60.0:
+        return "及格 (D)"
+    else:
+        return "不及格 (F) ⚠️"
+
 
 # ==================== 2. 主分析统计流程 ====================
 
-def main():
-    # 模拟班级成绩字典
-    scores = {
+def main() -> None:
+    """成绩分析器主执行流程"""
+    # 模拟全班成绩字典数据集
+    student_scores: Dict[str, float] = {
         "Alice": 92.5,
         "Bob": 58.0,
         "Charlie": 84.0,
@@ -31,22 +59,41 @@ def main():
         "Frank": 88.0
     }
 
-    score_list = list(scores.values())
+    # 【步骤 1】提取数值列表进行数学聚合计算
+    score_list = list(student_scores.values())
     total_students = len(score_list)
+    
+    if total_students == 0:
+        print("⚠️ 成绩库为空，无法进行统计！")
+        return
+
     avg_score = sum(score_list) / total_students
+    max_score = max(score_list)
+    min_score = min(score_list)
+
+    # 统计及格人数与及格率
     passed_count = sum(1 for s in score_list if s >= 60.0)
-    pass_rate = (passed_count / total_students) * 100
+    pass_rate = (passed_count / total_students) * 100.0
 
-    print("=== 全班成绩总览 ===")
-    for name, score in scores.items():
-        print(f"  {name:10}: {score:5.1f} 分 | 等级: {evaluate_grade(score)}")
+    # 【步骤 2】格式化输出全员明细清单
+    print("=" * 45)
+    print("        📋 全班学生成绩明细表        ")
+    print("=" * 45)
+    for name, score in student_scores.items():
+        grade_desc = evaluate_grade(score)
+        print(f"  • {name:<10} : {score:5.1f} 分  |  评级: {grade_desc}")
 
-    print("\n=== 综合统计指标 ===")
-    print(f"  • 学生总数: {total_students} 人")
-    print(f"  • 平均成绩: {avg_score:.2f} 分")
-    print(f"  • 最高分数: {max(score_list):.1f} 分")
-    print(f"  • 最低分数: {min(score_list):.1f} 分")
-    print(f"  • 及格比例: {pass_rate:.1f}% ({passed_count}/{total_students})")
+    # 【步骤 3】输出综合宏观统计指标
+    print("\n" + "=" * 45)
+    print("        📊 综合学术统计指标        ")
+    print("=" * 45)
+    print(f"  • 参考总人数 : {total_students} 人")
+    print(f"  • 全班平均分 : {avg_score:.2f} 分")
+    print(f"  • 全班最高分 : {max_score:.1f} 分")
+    print(f"  • 全班最低分 : {min_score:.1f} 分")
+    print(f"  • 考试及格率 : {pass_rate:.1f}% ({passed_count}/{total_students} 人及格)")
+    print("=" * 45)
+
 
 if __name__ == "__main__":
     main()
